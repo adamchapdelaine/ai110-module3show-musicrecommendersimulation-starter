@@ -1,11 +1,50 @@
-id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
-1,Sunrise City,Neon Echo,pop,happy,0.82,118,0.84,0.79,0.18
-2,Midnight Coding,LoRoom,lofi,chill,0.42,78,0.56,0.62,0.71
-3,Storm Runner,Voltline,rock,intense,0.91,152,0.48,0.66,0.10
-4,Library Rain,Paper Lanterns,lofi,chill,0.35,72,0.60,0.58,0.86
-5,Gym Hero,Max Pulse,pop,intense,0.93,132,0.77,0.88,0.05
-6,Spacewalk Thoughts,Orbit Bloom,ambient,chill,0.28,60,0.65,0.41,0.92
-7,Coffee Shop Stories,Slow Stereo,jazz,relaxed,0.37,90,0.71,0.54,0.89
-8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22
-9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78
-10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35
+id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness,speechiness,instrumentalness,popularity
+1,Sunrise City,Neon Echo,pop,happy,0.82,118,0.84,0.79,0.18,0.05,0.02,0.78
+2,Midnight Coding,LoRoom,lofi,chill,0.42,78,0.56,0.62,0.71,0.04,0.85,0.55
+3,Storm Runner,Voltline,rock,intense,0.91,152,0.48,0.52,0.10,0.05,0.05,0.62
+4,Library Rain,Paper Lanterns,lofi,chill,0.35,72,0.60,0.58,0.86,0.03,0.90,0.48
+5,Gym Hero,Max Pulse,pop,intense,0.93,132,0.77,0.88,0.05,0.07,0.01,0.90
+6,Spacewalk Thoughts,Orbit Bloom,ambient,chill,0.28,60,0.65,0.22,0.92,0.03,0.95,0.35
+7,Coffee Shop Stories,Slow Stereo,jazz,relaxed,0.37,90,0.71,0.54,0.89,0.05,0.70,0.50
+8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.10,0.04,0.60,0.68
+9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78,0.04,0.88,0.58
+10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35,0.04,0.03,0.65
+11,Concrete Crown,Kid Meridian,hip-hop,confident,0.78,92,0.62,0.85,0.12,0.32,0.00,0.82
+12,Dust Road Home,Willow Creek Band,country,nostalgic,0.48,100,0.66,0.57,0.74,0.04,0.02,0.60
+13,Nocturne in Grey,Elena Marchetti,classical,melancholic,0.22,56,0.18,0.25,0.97,0.03,0.96,0.40
+14,Iron Requiem,Black Cathedral,metal,angry,0.97,168,0.22,0.45,0.04,0.08,0.10,0.55
+15,Island Sunday,Rootsy Tides,reggae,uplifting,0.58,78,0.88,0.80,0.45,0.10,0.04,0.63
+16,Neon Pulse,Hyperwave,edm,euphoric,0.95,128,0.90,0.92,0.03,0.06,0.45,0.85
+17,Velvet Hours,Marcel Noir,r&b,romantic,0.45,84,0.64,0.72,0.38,0.07,0.01,0.72
+18,Autumn Letters,Pine & Ember,folk,wistful,0.33,88,0.42,0.46,0.93,0.03,0.08,0.38
+19,Last Call Blues,Delta Mae,blues,sad,0.40,70,0.25,0.50,0.68,0.04,0.15,0.42
+20,Calle Caliente,Luna Vega,reggaeton,sensual,0.80,96,0.78,0.90,0.10,0.15,0.00,0.88
+21,Sunset Parade,Kofi Mensah,afrobeats,joyful,0.74,106,0.89,0.85,0.20,0.08,0.02,0.70
+22,Burn the Map,Static Riot,punk,rebellious,0.93,178,0.55,0.38,0.06,0.07,0.02,0.45
+23,Slow Burn Sunday,Ada Rivers,soul,hopeful,0.52,76,0.68,0.64,0.45,0.05,0.01,0.60
+24,Mirrorball Nights,Velvet Disco,disco,carefree,0.84,118,0.92,0.88,0.12,0.04,0.03,0.74
+25,Ipanema Afternoon,Clara Dias,bossa nova,serene,0.30,120,0.72,0.62,0.88,0.04,0.40,0.45
+26,Cold Chrome,Vanta Kid,trap,dark,0.72,140,0.30,0.80,0.08,0.28,0.02,0.80
+27,Hallelujah Morning,Grace Avenue Choir,gospel,triumphant,0.70,96,0.85,0.62,0.40,0.06,0.02,0.40
+28,Fog Over Static,Pale Harbour,shoegaze,dreamy,0.60,100,0.38,0.35,0.15,0.03,0.55,0.30
+29,Fuego Antiguo,Mateo Reyes,flamenco,passionate,0.68,110,0.45,0.55,0.90,0.05,0.50,0.40
+30,Noche de Perreo,Rico Luna,reggaeton,swaggering,0.84,94,0.72,0.92,0.08,0.18,0.00,0.85
+31,Lagos Midnight,Tunde Ayo,afrobeats,festive,0.78,102,0.84,0.87,0.18,0.09,0.03,0.72
+32,Basement Show,Rusty Halo,punk,defiant,0.95,184,0.60,0.35,0.05,0.08,0.02,0.40
+33,Honey in the Rain,Maya Sterling,soul,bittersweet,0.48,72,0.45,0.58,0.50,0.05,0.01,0.55
+34,Last Dance at Studio Nine,The Glitter Club,disco,playful,0.86,122,0.90,0.90,0.10,0.04,0.04,0.68
+35,Rainy Copacabana,Joao Carvalho,bossa nova,mellow,0.26,108,0.62,0.55,0.91,0.04,0.55,0.38
+36,Sleepless in Atlanta,Yung Ember,trap,brooding,0.65,132,0.28,0.76,0.12,0.30,0.01,0.75
+37,Lift Every Voice Today,Harmony Hill Choir,gospel,reverent,0.45,80,0.65,0.50,0.60,0.05,0.02,0.35
+38,Static Bloom,Hollow Veil,shoegaze,ethereal,0.55,96,0.33,0.32,0.20,0.03,0.60,0.28
+39,Sangre y Luna,Isabela Montoya,flamenco,dramatic,0.74,118,0.40,0.58,0.88,0.06,0.45,0.35
+40,Groove Machine,The Brass Collective,funk,groovy,0.80,108,0.88,0.90,0.25,0.06,0.10,0.66
+41,Slap Back Friday,Sly Cadillac,funk,cheerful,0.76,102,0.84,0.86,0.22,0.07,0.06,0.58
+42,Holler Road Reel,Misty Mountain Boys,bluegrass,spirited,0.72,132,0.80,0.55,0.92,0.04,0.35,0.35
+43,Hard Times Hollow,Clementine Ridge,bluegrass,longing,0.45,96,0.35,0.48,0.94,0.04,0.12,0.30
+44,Warehouse 303,Kern Static,techno,hypnotic,0.90,132,0.38,0.82,0.02,0.02,0.88,0.48
+45,Concrete Pulse,Void Circuit,techno,tense,0.94,140,0.30,0.75,0.02,0.03,0.90,0.40
+46,Candy Voltage,NOVA-7,k-pop,bubbly,0.88,128,0.86,0.86,0.10,0.09,0.00,0.92
+47,Midnight Letter,SERA,k-pop,tender,0.55,90,0.50,0.62,0.30,0.05,0.00,0.82
+48,Baila Conmigo,Orquesta del Sol,salsa,lively,0.86,176,0.90,0.80,0.55,0.07,0.10,0.55
+49,Cafe con Recuerdos,Celia Montes,salsa,sentimental,0.62,150,0.68,0.72,0.60,0.05,0.05,0.45

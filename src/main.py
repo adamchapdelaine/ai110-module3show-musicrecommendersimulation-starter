@@ -11,13 +11,27 @@ You will implement the functions in recommender.py:
 
 from recommender import load_songs, recommend_songs
 
+PROFILES = {
+    "Intense Rock": {
+        "genre": "rock", "mood": "intense", "energy": 0.92, "valence": 0.45,
+        "acousticness": 0.10, "tempo_bpm": 150, "danceability": 0.50,
+        "instrumentalness": 0.05, "popularity": 0.60,
+    },
+    "Chill Lofi": {
+        "genre": "lofi", "mood": "chill", "energy": 0.38, "valence": 0.58,
+        "acousticness": 0.80, "tempo_bpm": 76, "danceability": 0.60,
+        "instrumentalness": 0.88, "popularity": 0.50,
+    },
+    "Conflicting (high energy + acoustic)": {
+        "genre": "folk", "mood": "wistful", "energy": 0.90,
+        "acousticness": 0.90, "tempo_bpm": 140,
+    },
+}
 
 def main() -> None:
     songs = load_songs("data/songs.csv") 
 
-    # Starter example profile
-    user_prefs = {"genre": "pop", "mood": "happy", "energy": 0.8}
-
+    user_prefs = {}
     recommendations = recommend_songs(user_prefs, songs, k=5)
 
     print("\nTop recommendations:\n")

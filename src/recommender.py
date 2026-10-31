@@ -1,6 +1,14 @@
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
+WEIGHTS = {
+    "genre": 0.20, "energy": 0.20, "mood": 0.17,
+    "valence": 0.13, "acousticness": 0.10, "tempo_bpm": 0.06,
+    "danceability": 0.05, "instrumentalness": 0.05,
+    "popularity": 0.04
+}
+TEMPO_RANGE = 120 # normalizes BPM differences to roughly 0-1
+
 @dataclass
 class Song:
     """
@@ -17,6 +25,8 @@ class Song:
     valence: float
     danceability: float
     acousticness: float
+    instrumentalness: float
+    popularity: float
 
 @dataclass
 class UserProfile:
@@ -24,10 +34,17 @@ class UserProfile:
     Represents a user's taste preferences.
     Required by tests/test_recommender.py
     """
-    favorite_genre: str
-    favorite_mood: str
-    target_energy: float
-    likes_acoustic: bool
+    favorite_genres: list[str]
+    favorite_moods: list[str]
+    target_energy: Optional[float] = None
+    target_valence: Optional[float] = None
+    target_acousticness: Optional[float] = None
+    target_tempo_bpm: Optional[float] = None
+    target_danceability: Optional[float] = None
+    target_instrumentalness: Optional[float] = None
+    target_popularity: Optional[float] = None 
+
+
 
 class Recommender:
     """
