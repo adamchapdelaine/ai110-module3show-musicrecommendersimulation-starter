@@ -21,16 +21,41 @@ Prompts:
 
 ## 3. How the Model Works  
 
-Explain your scoring approach in simple language.  
+The features of each song used are:
+- Its Genre
+- Mood
+- Energy
+- Tempo in beats-per-minute
+- Valence
+- Danceability
+- Acousticness
+- Instrumentalness
+- Popularity
 
-Prompts:  
+The user preferences considered are:
+- Favorite Genres
+- Favorite Moods
+- Target energy
+- Target valence
+- Target acousticness
+- Target tempo
+- Target danceability
+- Target instrumentalness
+- Target popularity
 
-- What features of each song are used (genre, energy, mood, etc.)  
-- What user preferences are considered  
-- How does the model turn those into a score  
-- What changes did you make from the starter logic  
+How does the model turn these into a score?:
+THe model first assigns a weight to each song feature, which prioritizes some over others as the most important distinguishing features of a song. Then, it scores a feature based upon its closeness to the user preference for it, and multiplies that score by the weight of that feature to normalize it to a fraction of 1, 1 being the highest possible score.  
 
-Avoid code here. Pretend you are explaining the idea to a friend who does not program.
+Changes I made from the starter logic:
+- The pipeline for load_songs, score_song, and recommend_songs was implemented.
+- Songs are now loaded from a CSV, turning numeric columns into numbers for scoring.
+- I added instrumentalness and popularity as new song features
+- The user profile is richer, allowing the user to input lists of favorite genres and moods alongside (optional) additional targets for features like energy, valence, acousticness, tempo, and others for the occasional power user.
+- A weighted scoring model was added, which combines the weighted scores of each feature to a "similarity score" from 0 to 1.
+- Missing preferences are skipped, so a user doesn't need to set all targets to get song recommendations. This is achieved by dividing the final score by the combined weight of the features the user did set.
+- Added explanations for any feature that scores 0.7 or higher, which displays in the output under "Reasons."
+- Every song put into a ranking, which is sorted from highest to lowest. Only the top k songs are listed in the output.
+- I replaced the sample profile in main.py with three test profiles: Intense Rock, Chill Lofi, and a deliberately conflicting one (high energy plus acoustic) to test the limits of my scoring algorithm.
 
 ---
 

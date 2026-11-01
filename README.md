@@ -116,15 +116,142 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Sample Recommendation Output
 
-Paste a sample of your recommender's output here as a text block so a reader can see what it produces:
-
 ```
-# e.g.:
-# User profile: genre=indie, mood=chill, energy=low
-# Recommendations:
-#   1. ...
-#   2. ...
-#   3. ...
+Loaded songs: 49
+
+============================================================
+ INTENSE ROCK
+============================================================
+
+1. Storm Runner  —  Voltline
+   Score: 0.99  ████████████████████
+   Reasons:
+     • genre match (+0.20)
+     • energy close (+0.20)
+     • mood match (+0.17)
+     • valence close (+0.13)
+     • acousticness close (+0.10)
+     • tempo_bpm close (+0.06)
+     • danceability close (+0.05)
+     • instrumentalness close (+0.05)
+     • popularity close (+0.04)
+------------------------------------------------------------
+
+2. Gym Hero  —  Max Pulse
+   Score: 0.71  ██████████████░░░░░░
+   Reasons:
+     • energy close (+0.20)
+     • mood match (+0.17)
+     • acousticness close (+0.10)
+     • tempo_bpm close (+0.05)
+     • instrumentalness close (+0.05)
+     • popularity close (+0.03)
+------------------------------------------------------------
+
+3. Burn the Map  —  Static Riot
+   Score: 0.58  ████████████░░░░░░░░
+   Reasons:
+     • energy close (+0.20)
+     • valence close (+0.12)
+     • acousticness close (+0.10)
+     • tempo_bpm close (+0.05)
+     • danceability close (+0.04)
+     • instrumentalness close (+0.05)
+     • popularity close (+0.03)
+------------------------------------------------------------
+
+4. Iron Requiem  —  Black Cathedral
+   Score: 0.57  ███████████░░░░░░░░░
+   Reasons:
+     • energy close (+0.19)
+     • valence close (+0.10)
+     • acousticness close (+0.09)
+     • tempo_bpm close (+0.05)
+     • danceability close (+0.05)
+     • instrumentalness close (+0.05)
+     • popularity close (+0.04)
+------------------------------------------------------------
+
+5. Basement Show  —  Rusty Halo
+   Score: 0.57  ███████████░░░░░░░░░
+   Reasons:
+     • energy close (+0.19)
+     • valence close (+0.11)
+     • acousticness close (+0.10)
+     • tempo_bpm close (+0.04)
+     • danceability close (+0.04)
+     • instrumentalness close (+0.05)
+     • popularity close (+0.03)
+------------------------------------------------------------
+
+============================================================
+ CHILL LOFI
+============================================================
+
+1. Library Rain  —  Paper Lanterns
+   Score: 0.98  ████████████████████
+   Reasons:
+     • genre match (+0.20)
+     • energy close (+0.19)
+     • mood match (+0.17)
+     • valence close (+0.13)
+     • acousticness close (+0.09)
+     • tempo_bpm close (+0.06)
+     • danceability close (+0.05)
+     • instrumentalness close (+0.05)
+     • popularity close (+0.04)
+------------------------------------------------------------
+
+2. Midnight Coding  —  LoRoom
+   Score: 0.97  ███████████████████░
+   Reasons:
+     • genre match (+0.20)
+     • energy close (+0.19)
+     • mood match (+0.17)
+     • valence close (+0.13)
+     • acousticness close (+0.09)
+     • tempo_bpm close (+0.06)
+     • danceability close (+0.05)
+     • instrumentalness close (+0.05)
+     • popularity close (+0.04)
+------------------------------------------------------------
+
+3. Focus Flow  —  LoRoom
+   Score: 0.82  ████████████████░░░░
+   Reasons:
+     • genre match (+0.20)
+     • energy close (+0.20)
+     • valence close (+0.13)
+     • acousticness close (+0.10)
+     • tempo_bpm close (+0.06)
+     • danceability close (+0.05)
+     • instrumentalness close (+0.05)
+     • popularity close (+0.04)
+------------------------------------------------------------
+
+4. Spacewalk Thoughts  —  Orbit Bloom
+   Score: 0.72  ██████████████░░░░░░
+   Reasons:
+     • energy close (+0.18)
+     • mood match (+0.17)
+     • valence close (+0.12)
+     • acousticness close (+0.09)
+     • tempo_bpm close (+0.05)
+     • instrumentalness close (+0.05)
+     • popularity close (+0.03)
+------------------------------------------------------------
+
+5. Coffee Shop Stories  —  Slow Stereo
+   Score: 0.58  ████████████░░░░░░░░
+   Reasons:
+     • energy close (+0.20)
+     • valence close (+0.11)
+     • acousticness close (+0.09)
+     • tempo_bpm close (+0.05)
+     • danceability close (+0.05)
+     • instrumentalness close (+0.04)
+     • popularity close (+0.04)
+------------------------------------------------------------
 ```
 
 **Screenshot or video** *(optional)*: <!-- Insert a screenshot or demo video link here -->
