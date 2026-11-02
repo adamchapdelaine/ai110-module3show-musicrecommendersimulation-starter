@@ -11,18 +11,37 @@
 **What task did you give the agent?**
 
 <!-- Describe the goal you asked the agent to accomplish -->
+Note: I'm not sure if this is referring to automated Claude tasks or just a short summary of what I asked the agent to do in my prompts.
+
+I instructed the agent to suggest four additional complex features for my dataset, implement them, and guide me while I made manual edits to verify if the changes were working correctly.
 
 **Prompts used:**
 
 <!-- Paste the key prompts you gave the agent -->
 
+ "@data/songs.csv  Suggest four additional complex attributes that are not currently present in the baseline data. See if you can identify attributes that would further increase the accuracy of the model."
+
+ "@data/songs.csv @src/recommender.py Update songs.csv with the following features, and assign appropriate values: mood_tags, loudness_db, language, activity_fit, release_decade.
+ 
+ Then, in src/recommender.py, add these features into the WEIGHTS dictionary and adjust the point distribution to prioritize genre, energy, and mood while keeping the sum of all feature weights is 1.0. Include these new features in the dataclasses Song and UserProfile. Lastly, update the scoring logic to accommodate these new features. Make sure to update load_songs, score_song, and recommend_songs.
+ 
+ For each function, write a brief up-to-date docstring that reflects their current logic."
+ 
+ "@data/songs.csv @src/recommender.py @src/main.py Update PROFILES in main.py to include the new features mood_tags, loudness_db, language, activity_fit, release_decade. Ensure the keys are assigned an appropriate value in the correct data type."
+
+ "@src/recommender.py  I noticed that songs that receive a mood bonus also gain a mood_tag bonus, but I only want the mood_tag bonus to apply when there isn't an exact mood match. Can you give me a suggestion on how and where to implement a change that fixes this in recommender.py?"
+
 **What did the agent generate or change?**
 
 <!-- List the files edited, code generated, or commands run -->
 
+The agent changed songs.csv, main.py, and recommender.py.
+
 **What did you verify or fix manually?**
 
 <!-- Describe anything the agent got wrong or that required human review -->
+
+I ran python -m src.main to check the output, and noticed that the AI implemented mood_tags in such a way that a song with an exact mood match would gain +0.15 for the mood match AND +0.10 for a matching mood_tag, when mood_tag's purpose was to be a fallback for similar moods in case there wasn't an exact match. I implemented the fix manually, but consulted AI for suggestions while doing so.
 
 ---
 
