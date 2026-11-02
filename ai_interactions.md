@@ -52,12 +52,34 @@ I ran python -m src.main to check the output, and noticed that the AI implemente
 **Which design pattern did you use?**
 
 <!-- e.g., Strategy, Factory, Observer, etc. -->
-Strategy
+
+I used the Strategy design pattern.
 
 **How did AI help you brainstorm or implement it?**
 
 <!-- Describe the conversation or suggestions that led to your decision -->
 
+Note: I'm very new to design patterns, so I had to defer to AI more than usual this time.
+
+Initial prompt:
+
+ Brainstorm a design pattern that would keep my code in recommender.py modular. What design pattern would be most appropriate for this file? Justify why. Then, explain how you would implement it if you were me.
+
+AI justification:
+- score_song is an if/elif ladder, and each new feature type requires that function to be modified. This violates the open/closed principles.
+- The "kind of a feature is spread across four sets. A feature's type is implied by which set it appears in, plus a WEIGHTS entry. Strategy puts that knowledge in a single place.
+- The branches are interchangeable. Each one takes (target, song_value) and returns a 0-1 score plus a label. This is well-suited for Strategy.
+- Each strategy becomes testable alone. Currently, you can only test the formulas by calling all of score_song.
+- It lines up with your experiments. With Strategy, each fine-tuning of a formula or adding a small feature touches one small class.
+
+I then worked with AI to implement this. Instead of implementing Genre-First and then branching off with Mood-First, I made a separate branch after refactoring the already existing code to fit the Strategy design pattern with the help of AI. I also restored functionality of the Recommender class and set up additional tests in test_recommender.py to test the changes that were made. This was especially important due to my knowledge gaps, a manual review over each granular part of the code would have taken at least a full day.
+
 **How does the pattern appear in your final code?**
 
 <!-- Point to the relevant class or method -->
+
+The Strategy pattern appears in these cases:
+
+1. Each feature type has its own scoring strategy class  in recommender.py (ExactMatch, Jaccard, ScaledDistance, etc).
+2. A whole scorer can be swapped, because recommend_songs and Recommender take a scorer argument, and make_scorer builds variants with different weights. 
+3. Ordering can be swapped through the key argument, as in genre_first_key. The RANKING_MODES registry bundles these into named modes, and main.py --mode selects one at runtime. This allows Genre-First, Mood-First, and Balanced all run through the same call: recommend_songs.
