@@ -2,17 +2,6 @@
 
 ## Project Summary
 
-In this project you will build and explain a small music recommender system.
-
-Your goal is to:
-
-- Represent songs and a user "taste profile" as data
-- Design a scoring rule that turns that data into recommendations
-- Evaluate what your system gets right and wrong
-- Reflect on how this mirrors real world AI recommenders
-
-Replace this paragraph with your own summary of what your version does.
-
 Real-world recommendations work by utilizing a hybrid scoring approach that combines collaborative filtering and content-based filtering. Collaborative filtering scores songs based on user behavior at scale. Content-based filtering scores individual songs based on descriptive features and metadata of those songs, and how close those align with what a user seems to like. Songs are then ranked amongst each other based on their scores to determine what songs to recommend and in which order. 
 
 My version will rely on content-based filtering for scoring songs, prioritizing the attributes that most strongly distinguish songs such as energy, mood, valence, and acousticness. 

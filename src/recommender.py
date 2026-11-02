@@ -3,14 +3,15 @@ from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
 WEIGHTS = {
-    "genre": 0.20, "energy": 0.20, "mood": 0.17,
-    "valence": 0.13, "acousticness": 0.10, "tempo_bpm": 0.06,
-    "danceability": 0.05, "instrumentalness": 0.05,
-    "popularity": 0.04
+    "genre": 0.10, "energy": 0.40, "mood": 0.142,
+    "valence": 0.108, "acousticness": 0.083, "tempo_bpm": 0.050,
+    "danceability": 0.042, "instrumentalness": 0.042,
+    "popularity": 0.033
 }
 TEMPO_RANGE = 120 # normalizes BPM differences to roughly 0-1
 BINARY_FEATURES = {"genre", "mood"}
 REASON_THRESHOLD = 0.7 # minimum per-feature score that earns a reason
+GENRE_MISMATCH_PENALTY = 0.15 # subtracted from the final score when genre doesn't match
 
 @dataclass
 class Song:
@@ -120,6 +121,13 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
             reasons.append(f"{feature} {label} (+{contribution:.2f})")
 
     score = total / used_weight if used_weight > 0 else 0.0
+
+    genre_target = user_prefs.get("genre")
+    if genre_target is not None and song["genre"] != genre_target:
+        score -= GENRE_MISMATCH_PENALTY
+        reasons.append(f"genre mismatch (-{GENRE_MISMATCH_PENALTY:.2f})")
+
+    score = max(score, 0.0)
     return score, reasons
 
 def recommend_songs(user_prefs: Dict, songs: List[Dict], k: int = 5) -> List[Tuple[Dict, float, str]]:

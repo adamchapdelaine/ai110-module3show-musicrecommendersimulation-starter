@@ -22,9 +22,30 @@ PROFILES = {
         "acousticness": 0.80, "tempo_bpm": 76, "danceability": 0.60,
         "instrumentalness": 0.88, "popularity": 0.50,
     },
-    "Conflicting (high energy + acoustic)": {
-        "genre": "folk", "mood": "wistful", "energy": 0.90,
-        "acousticness": 0.90, "tempo_bpm": 140,
+    "High-Energy Pop": {
+        "genre": "pop", "mood": "happy", "energy": 0.88, "valence": 0.85,
+        "acousticness": 0.12, "tempo_bpm": 128, "danceability": 0.85,
+        "instrumentalness": 0.02, "popularity": 0.90,
+    },
+    "Mellow Jazz": {
+        "genre": "jazz", "mood": "relaxed", "energy": 0.30, "valence": 0.65,
+        "acousticness": 0.92, "tempo_bpm": 90, "danceability": 0.45,
+        "instrumentalness": 0.60, "popularity": 0.35,
+    },
+    "Sad Banger": {
+        "genre": "pop", "mood": "melancholic", "energy": 0.80, "valence": 0.20,
+        "acousticness": 0.15, "tempo_bpm": 120, "danceability": 0.80,
+        "instrumentalness": 0.02, "popularity": 0.80,
+    },
+    "Upbeat Jazz": {
+        "genre": "jazz", "mood": "upbeat", "energy": 0.78, "valence": 0.85,
+        "acousticness": 0.60, "tempo_bpm": 105, "danceability": 0.85,
+        "instrumentalness": 0.30, "popularity": 0.55,
+    },
+    "Instrumental Hype": {
+        "mood": "intense", "energy": 0.92, "valence": 0.35,
+        "acousticness": 0.05, "tempo_bpm": 135, "danceability": 0.70,
+        "instrumentalness": 0.90, "popularity": 0.45,
     },
 }
 

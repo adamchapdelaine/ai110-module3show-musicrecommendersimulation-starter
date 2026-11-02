@@ -2,26 +2,30 @@
 
 ## 1. Model Name  
 
-Give your model a short, descriptive name.  
-Example: **VibeFinder 1.0**  
+**MusiMe 0.1.0** 
 
 ---
 
 ## 2. Intended Use  
 
-Describe what your recommender is designed to do and who it is for. 
+MusiMe is a content-based music recommender. Give a user's taste profile, it'll rank every song in a small CSV catalog and return the top k (5 by default). Each result comes with a similarity score from 0 to 1 and a short "Reasons" string to justify scoring decisions. It lists features that matched closely like "mood match," and flags a genre mismatch penalty when one applies.
 
-Prompts:  
+**What it recommends:** Songs from the catalog whose attributes are numerically close to the user's stated preferences. It scores genre, mood, energy, valence, acousticness, tempo, danceability, instrumentallness and popularity. Energy and mood carry the most weight out of all of them. It doesn't recommend based on listening history, other users' behavior or lyrics.
 
-- What kind of recommendations does it generate  
-- What assumptions does it make about the user  
-- Is this for real users or classroom exploration  
+**Assumptions about the user:**
+- The user can state their taste up front, explicitly identifying their favorite genres and moods as well as setting optional numeric targets like energy or tempo.
+- Taste is stable and rigid to a single "ideal." People who enjoy mixed playlists are not accounted for.
+- The user doesn't seek novelty, as the model has no means of deviating from its scoring system to suggest anything new.
+- Unset preferences don't matter to the user, as they are skipped rather than guessed.
+
+**Who or what is this for?:** 
+This is for classroom exploration only. The catalog is tiny, most genres have one or two songs, and the moods skew towards happy and upbeat. The example profiles are test cases rather than real people or approximations of a person's varied tastes. The project is meant for studying how a weighted scoring recommender works conceptually, and to practice documenting systems using a Model Card.
 
 ---
 
 ## 3. How the Model Works  
 
-The features of each song used are:
+**The features of each song used are:**
 - Its Genre
 - Mood
 - Energy
@@ -32,7 +36,7 @@ The features of each song used are:
 - Instrumentalness
 - Popularity
 
-The user preferences considered are:
+**The user preferences considered are:**
 - Favorite Genres
 - Favorite Moods
 - Target energy
@@ -43,10 +47,10 @@ The user preferences considered are:
 - Target instrumentalness
 - Target popularity
 
-How does the model turn these into a score?:
+**How does the model turn these into a score?:**
 THe model first assigns a weight to each song feature, which prioritizes some over others as the most important distinguishing features of a song. Then, it scores a feature based upon its closeness to the user preference for it, and multiplies that score by the weight of that feature to normalize it to a fraction of 1, 1 being the highest possible score.  
 
-Changes I made from the starter logic:
+**Changes I made from the starter logic:**
 - The pipeline for load_songs, score_song, and recommend_songs was implemented.
 - Songs are now loaded from a CSV, turning numeric columns into numbers for scoring.
 - I added instrumentalness and popularity as new song features
@@ -61,76 +65,87 @@ Changes I made from the starter logic:
 
 ## 4. Data  
 
-Describe the dataset the model uses.  
+There are 49 songs in the dataset, and over 30 genres. Some genres are very similar to one another but aren't merged together or given bonuses for similarity, so they aren't considered properly in the scoring.
 
-Prompts:  
-
-- How many songs are in the catalog  
-- What genres or moods are represented  
-- Did you add or remove data  
-- Are there parts of musical taste missing in the dataset  
+I added most of the songs in this dataset, as well as the instrumentalness and popularity features.
 
 ---
 
 ## 5. Strengths  
 
-Where does your system seem to work well  
+This system works well for users who like high energy pop songs or lofi, as those are the two niches best represented in the song dataset.
 
-Prompts:  
+The scoring is good at identifying songs of the desired energy level, due to how strongly it is weighted in recommender.py.
 
-- User types for which it gives reasonable results  
-- Any patterns you think your scoring captures correctly  
-- Cases where the recommendations matched your intuition  
+The recommendations matched my intuition most closely with the HIGH ENERGY POP and CHILL LOFI profiles.
 
 ---
 
 ## 6. Limitations and Bias 
 
-Where the system struggles or behaves unfairly. 
+Genre is exact-match, so users who look up "indie pop" instead of "pop" won't get any same-genre songs.
 
-Prompts:  
+Only 3 of 31 genres have more than 2 songs, which over-prioritizes those genres compared to the more niche ones.
 
-- Features it does not consider  
-- Genres or moods that are underrepresented  
-- Cases where the system overfits to one preference  
-- Ways the scoring might unintentionally favor some users  
+Mid-energy users get a weak signal, as there are only 8 songs within the energy band of 0.5 to 0.7. 
+
+Happy playlists are over-prioritized compared to sad playlists, as are very few songs fitting a "sad" or "melancholic" mood and far more with happy or upbeat moods.
 
 ---
 
 ## 7. Evaluation  
 
-How you checked whether the recommender behaved as expected. 
+**I tested the following user profiles:**
+- INTENSE ROCK
+- CHILL LOFI
+- HIGH-ENERGY POP
+- MELLOW JAZZ
+- SAD BANGER
+- UPBEAT JAZZ
+- INSTRUMENTAL HYPE
 
-Prompts:  
+In the recommendations, I looked for same-genre songs as well as songs with matching moods or energy, as those three categories are the most important characteristics of the scoring algorithm.
 
-- Which user profiles you tested  
-- What you looked for in the recommendations  
-- What surprised you  
-- Any simple tests or comparisons you ran  
+**Profile Evaluation:**
+- INTENSE ROCK profile prefers high energy songs with "intense" mood; CHILL LOFI prefers low energy songs with a "chill" mood.
+    - Output for INTENSE ROCK profile doesn't make sense, due to including a pop song in it's top 3. CHILL LOFI's output does make sense, especially with the fact it lists 3 same-genre songs with a similar energy level.
+- HIGH-ENERGY POP prefers high energy, upbeat songs; MELLOW JAZZ prefers low energy songs with high acousticness.
+    - Output for HIGH-ENERGY POP makes sense, with non-pop songs being from similar genres such as k-pop. Output for MELLOW JAZZ is flawed due to the lack of jazz songs.
+- SAD BANGER prefers high energy pop songs with low valence; UPBEAT JAZZ prefers high energy, high valence jazz songs.
+    - Output for SAD BANGER  doesn't make sense due to amount of upbeat songs, but the output for UPBEAT JAZZ matches the intended vibe (in spite of the lack of Jazz songs).
+- INSTRUMENTAL HYPE prefers high energy, "intense" mood songs.
+    - Output doesn't make sense, because first recommendation is a traditional rock song rather than an "instrumental" song.
 
-No need for numeric metrics unless you created some.
-
+**What surprised me about the results:**
+- The overrepresentation of Gym Hero - Max Pulse in 4 out of the 7 user profiles.
+- How few same-genre songs there were for each user profile.
+- The lack of melancholic songs, leading to a "happy" song, Sunrise City - Neon Echo, being listed as #1 for SAD BANGER.
 ---
 
 ## 8. Future Work  
 
-Ideas for how you would improve the model next.  
-
-Prompts:  
-
-- Additional features or preferences  
-- Better ways to explain recommendations  
-- Improving diversity among the top results  
-- Handling more complex user tastes  
+**How I would improve the model next:**
+- Emphasize genre more strongly in the weights.
+- Consolidating genres and adding the capability for similar genres to be clustered together so similar genres may be scored favorably.
+- Consolidating moods in a similar fashion to the idea above.
+- Add a rule or MMR that limits the same artists and genres from filling the entire recommendation so that the user can receive at least one "stretch" suggestion.
 
 ---
 
 ## 9. Personal Reflection  
 
-A few sentences about your experience.  
+**What was my biggest learning moment during this project?:**
+The most significant thing I learnt during this project was how to implement a content-based filtering system for scoring songs. I also learnt about the amount of work and fine-tuning that goes into a very basic simulation of a music recommender. 
 
-Prompts:  
+**How did using AI tools help me, and when did I need to double-check them?:**
+The use of AI tools helped me primarily with understanding the pre-existing logic of files such as main.py and recommender.py. It also helped critique my design choices, produce user profiles, and fill songs.csv with more variety.
 
-- What you learned about recommender systems  
-- Something unexpected or interesting you discovered  
-- How this changed the way you think about music recommendation apps  
+**What surprised me about how simple algorithms can still "feel" like recommendations?:**
+I was surprised by how such an impersonal algorithm could produce relatively accurate recommendations. It was just a matter of assigning arbitrary weights to a modest list of numerical representations of song features, and the model manipulated those numeric values into tailored recommendations. I wonder if more sophisticated recommendation algorithms like the one used for Youtube or Spotify incorporate elements of this simple project in their own algorithms.
+
+**What would I try next if I extended this project?:**
+If I were to extend this project, I would do the following:
+- Add Advanced Song Features
+- Create Multiple Scoring Modes
+- Implement Diversity and Fairness Logic
+- Add a Visual Summary Table
