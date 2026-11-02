@@ -52,6 +52,7 @@ I ran python -m src.main to check the output, and noticed that the AI implemente
 **Which design pattern did you use?**
 
 <!-- e.g., Strategy, Factory, Observer, etc. -->
+Strategy
 
 **How did AI help you brainstorm or implement it?**
 
