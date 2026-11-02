@@ -9,7 +9,9 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
-from src.recommender import load_songs, recommend_songs
+import argparse
+
+from src.recommender import RANKING_MODES, load_songs, recommend_songs
 
 PROFILES = {
     "Intense Rock": {
@@ -79,9 +81,10 @@ def score_bar(score: float) -> str:
     return "█" * filled + "░" * (BAR_LEN - filled)
 
 
-def print_recommendations(name: str, recommendations: list) -> None:
+def print_recommendations(name: str, recommendations: list, mode_name: str) -> None:
     print("=" * WIDTH)
     print(f" {name}".upper())
+    print(f" MODE: {mode_name}")
     print("=" * WIDTH)
 
     for rank, (song, score, explanation) in enumerate(recommendations, start=1):
@@ -98,14 +101,29 @@ def print_recommendations(name: str, recommendations: list) -> None:
     print()
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Music Recommender Simulation")
+    parser.add_argument(
+        "--mode",
+        choices=list(RANKING_MODES),
+        default="balanced",
+        help="ranking mode: "
+        + "; ".join(f"{m.name} = {m.description}" for m in RANKING_MODES.values()),
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
+    mode = RANKING_MODES[parse_args().mode]
     songs = load_songs("data/songs.csv")
 
     print(f"Loaded songs: {len(songs)}\n")
 
     for name, user_prefs in PROFILES.items():
-        recommendations = recommend_songs(user_prefs, songs, k=5)
-        print_recommendations(name, recommendations)
+        recommendations = recommend_songs(
+            user_prefs, songs, k=5, scorer=mode.scorer, key=mode.key
+        )
+        print_recommendations(name, recommendations, mode.name)
 
 
 if __name__ == "__main__":

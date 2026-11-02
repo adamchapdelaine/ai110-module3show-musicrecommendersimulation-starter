@@ -1,5 +1,6 @@
 import csv
-from typing import Callable, List, Dict, Tuple, Optional
+from functools import partial
+from typing import Any, Callable, List, Dict, Tuple, Optional
 from dataclasses import dataclass, field, asdict
 
 REASON_THRESHOLD = 0.7 # minimum per-feature score that earns a reason
@@ -96,11 +97,14 @@ def _skip_mood_tags_when_mood_matched(feature: str, user_prefs: Dict, song: Dict
     return mood_target is not None and ExactMatch()(mood_target, song["mood"]) == 1.0
 
 
-def _genre_mismatch_penalty(score: float, user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
+def _genre_mismatch_penalty(
+    score: float, user_prefs: Dict, song: Dict,
+    penalty: float = GENRE_MISMATCH_PENALTY,
+) -> Tuple[float, List[str]]:
     """Subtracts a flat penalty when a genre target is given and doesn't match."""
     genre_target = user_prefs.get("genre")
     if genre_target is not None and ExactMatch()(genre_target, song["genre"]) == 0.0:
-        return score - GENRE_MISMATCH_PENALTY, [f"genre mismatch (-{GENRE_MISMATCH_PENALTY:.2f})"]
+        return score - penalty, [f"genre mismatch (-{penalty:.2f})"]
     return score, []
 
 
@@ -186,8 +190,17 @@ def load_songs(csv_path: str) -> List[Dict]:
 # A scorer takes (user_prefs, song) as dicts and returns (score, reasons).
 Scorer = Callable[[Dict, Dict], Tuple[float, List[str]]]
 
+# A rank key takes (user_prefs, song, score) and returns a sortable value;
+# songs are ordered by it, highest first.
+RankKey = Callable[[Dict, Dict, float], Any]
 
-def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
+
+def score_song(
+    user_prefs: Dict,
+    song: Dict,
+    weights: Optional[Dict[str, float]] = None,
+    adjustments: Optional[List[Callable]] = None,
+) -> Tuple[float, List[str]]:
     """
     Scores one song against user preferences, returning (score, reasons).
 
@@ -195,16 +208,24 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     the strategy registered for it in FEATURES (see the strategy classes
     above) and weighted; the weighted sum is divided by the weight actually
     used, so the result is 0-1. SKIP_RULES can exclude a feature for a given
-    song, and ADJUSTMENTS (e.g. the genre mismatch penalty) modify the final
-    score; the result is floored at 0. Features scoring at least
-    REASON_THRESHOLD add a human-readable entry to reasons.
+    song, and adjustments (default ADJUSTMENTS, e.g. the genre mismatch
+    penalty) modify the final score; the result is floored at 0. Features
+    scoring at least REASON_THRESHOLD add a human-readable entry to reasons.
+
+    `weights` overrides the FEATURES weight for the features it names (no
+    renormalizing is needed because of the division by used weight), and
+    `adjustments` replaces ADJUSTMENTS. Both exist so ranking modes can
+    reuse this function; see make_scorer().
     Required by recommend_songs() and src/main.py
     """
+    weights = weights or {}
+    adjustments = ADJUSTMENTS if adjustments is None else adjustments
     total = 0.0
     used_weight = 0.0
     reasons: List[str] = []
 
-    for feature, (scorer, weight) in FEATURES.items():
+    for feature, (scorer, base_weight) in FEATURES.items():
+        weight = weights.get(feature, base_weight)
         target = user_prefs.get(feature)
         if target is None or target == []:
             continue
@@ -221,7 +242,7 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
 
     score = total / used_weight if used_weight > 0 else 0.0
 
-    for adjust in ADJUSTMENTS:
+    for adjust in adjustments:
         score, extra_reasons = adjust(score, user_prefs, song)
         reasons.extend(extra_reasons)
 
@@ -232,20 +253,26 @@ def recommend_songs(
     songs: List[Dict],
     k: int = 5,
     scorer: Scorer = score_song,
+    key: Optional[RankKey] = None,
 ) -> List[Tuple[Dict, float, str]]:
     """
     Returns the top k songs for a user as (song, score, explanation) tuples.
 
     Scores every song with `scorer` (default score_song), joins its reasons
-    into a single "; "-separated explanation string, and sorts by score
-    descending.
+    into a single "; "-separated explanation string, and sorts descending.
+    By default songs are ordered by score alone; pass `key(user_prefs, song,
+    score)` to order by something else (e.g. a tuple that puts a priority
+    tier ahead of the score). Ties keep catalog order.
     Required by src/main.py
     """
     scored = []
     for song in songs:
         score, reasons = scorer(user_prefs, song)
         scored.append((song, score, "; ".join(reasons)))
-    return sorted(scored, key=lambda item: item[1], reverse=True)[:k]
+    sort_key = key or (lambda prefs, song, score: score)
+    return sorted(
+        scored, key=lambda item: sort_key(user_prefs, item[0], item[1]), reverse=True
+    )[:k]
 
 
 def profile_to_prefs(user: UserProfile) -> Dict:
@@ -284,17 +311,23 @@ class Recommender:
     A custom `scorer` can be injected; it defaults to score_song.
     Required by tests/test_recommender.py
     """
-    def __init__(self, songs: List[Song], scorer: Scorer = score_song):
-        """Stores the song catalog and the scoring function to use."""
+    def __init__(
+        self,
+        songs: List[Song],
+        scorer: Scorer = score_song,
+        key: Optional[RankKey] = None,
+    ):
+        """Stores the song catalog, the scoring function and the optional rank key."""
         self.songs = songs
         self.scorer = scorer
+        self.key = key
 
     def recommend(self, user: UserProfile, k: int = 5) -> List[Song]:
         """Returns the top k songs for the given user profile."""
         song_dicts = [asdict(song) for song in self.songs]
         by_dict_id = {id(d): s for d, s in zip(song_dicts, self.songs)}
         ranked = recommend_songs(
-            profile_to_prefs(user), song_dicts, k, scorer=self.scorer
+            profile_to_prefs(user), song_dicts, k, scorer=self.scorer, key=self.key
         )
         return [by_dict_id[id(d)] for d, _score, _why in ranked]
 
@@ -303,3 +336,70 @@ class Recommender:
         score, reasons = self.scorer(profile_to_prefs(user), asdict(song))
         why = "; ".join(reasons) if reasons else "no strong feature matches"
         return f"{song.title} (score {score:.2f}): {why}"
+
+
+# --- Ranking modes ----------------------------------------------------------
+# A ranking mode bundles a scorer (how songs are scored) with an optional rank
+# key (how scored songs are ordered). Switch modes by name via RANKING_MODES.
+
+def make_scorer(
+    weights: Optional[Dict[str, float]] = None,
+    genre_penalty: float = GENRE_MISMATCH_PENALTY,
+) -> Scorer:
+    """
+    Builds a scorer that overrides some feature weights and the genre penalty.
+
+    Raises ValueError for unknown feature names so typos fail loudly instead
+    of being silently ignored.
+    """
+    unknown = set(weights or {}) - set(FEATURES)
+    if unknown:
+        raise ValueError(f"Unknown features in weights: {sorted(unknown)}")
+    adjustments = [
+        partial(a, penalty=genre_penalty) if a is _genre_mismatch_penalty else a
+        for a in ADJUSTMENTS
+    ]
+    return partial(score_song, weights=weights, adjustments=adjustments)
+
+
+def genre_first_key(user_prefs: Dict, song: Dict, score: float) -> Tuple[bool, float]:
+    """
+    Rank key that puts every genre match ahead of every non-match.
+
+    Score only orders songs within the same tier. If the user gave no genre,
+    nobody matches and ordering falls back to score alone.
+    """
+    genre_target = user_prefs.get("genre")
+    matched = genre_target is not None and ExactMatch()(genre_target, song["genre"]) == 1.0
+    return (matched, score)
+
+
+@dataclass(frozen=True)
+class RankingMode:
+    """A named way of ranking songs: a scorer plus an optional rank key."""
+    name: str
+    scorer: Scorer = score_song
+    key: Optional[RankKey] = None
+    description: str = ""
+
+
+# Genre-First: genre matches are a hard priority tier (via the rank key).
+# Mood-First: mood and mood_tags dominate the weights; genre barely counts.
+# mood_tags is still skipped when mood already matched (SKIP_RULES unchanged).
+MOOD_FIRST_WEIGHTS = {"mood": 0.40, "mood_tags": 0.15, "genre": 0.05}
+
+RANKING_MODES: Dict[str, RankingMode] = {
+    mode.name: mode
+    for mode in (
+        RankingMode("balanced", description="default weighted score"),
+        RankingMode(
+            "genre-first", key=genre_first_key,
+            description="genre matches always rank above non-matches",
+        ),
+        RankingMode(
+            "mood-first",
+            scorer=make_scorer(MOOD_FIRST_WEIGHTS, genre_penalty=0.05),
+            description="mood and mood tags dominate the score",
+        ),
+    )
+}
